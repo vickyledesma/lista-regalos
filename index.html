@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista de Deseos — Myriam & Ariel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #1e3050;
+      --gold:   #c8a96e;
+      --gold-dk:#a07840;
+      --info-bg:#eaf0f8;
+      --label:  #6a85a8;
+      --border: #cdd8e8;
+    }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      background: radial-gradient(ellipse at center, #e8ecf2 0%, #d0d8e4 100%);
+      color: var(--navy);
+      min-height: 100vh;
+      padding: 48px 16px 64px;
+    }
+
+    /* HEADER */
+    .header {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+    .header .eyebrow {
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--label);
+      margin-bottom: 12px;
+    }
+    .header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(2.2rem, 6vw, 3.6rem);
+      color: var(--navy);
+      line-height: 1.1;
+    }
+    .header h1 .amp { color: var(--gold); }
+    .divider-gold {
+      width: 160px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 16px auto;
+    }
+    .header .date {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--label);
+    }
+    .header .sub {
+      margin-top: 14px;
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--label);
+      line-height: 1.8;
+    }
+
+    /* CARD WRAPPER */
+    .card {
+      background: #fff;
+      border-radius: 2px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.13);
+      overflow: hidden;
+      max-width: 680px;
+      margin: 0 auto 28px;
+      display: flex;
+    }
+    .accent-left {
+      width: 5px;
+      flex-shrink: 0;
+      background: linear-gradient(to bottom, var(--gold), var(--gold-dk));
+    }
+    .card-inner {
+      flex: 1;
+      padding: 28px 32px;
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+      font-size: 8px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--label);
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* CHECKLIST */
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 11px 14px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background 0.2s;
+      user-select: none;
+    }
+    .checklist li:hover {
+      background: var(--info-bg);
+    }
+    .checklist li.done {
+      background: #f0f4f0;
+    }
+
+    /* Custom checkbox */
+    .checklist li .box {
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid var(--border);
+      border-radius: 2px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .checklist li.done .box {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .checklist li.done .box::after {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 9px;
+      border: 2px solid #fff;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg) translateY(-1px);
+    }
+
+    .checklist li .item-text {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--navy);
+      flex: 1;
+      transition: all 0.2s;
+    }
+    .checklist li.done .item-text {
+      text-decoration: line-through;
+      color: #aab8c8;
+    }
+
+    .checklist li .item-tag {
+      font-size: 8px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--label);
+      background: var(--info-bg);
+      padding: 3px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .checklist li.done .item-tag {
+      background: #e0e8e0;
+      color: #8aaa8a;
+    }
+
+    /* COUNTER */
+    .counter {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--label);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .counter .bar-wrap {
+      flex: 1;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .counter .bar-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--gold), var(--gold-dk));
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+    .counter .count-text {
+      white-space: nowrap;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    /* TRANSFER BLOCK */
+    .transfer-card {
+      background: var(--navy);
+      border-radius: 2px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      overflow: hidden;
+      max-width: 680px;
+      margin: 0 auto 48px;
+      display: flex;
+    }
+    .transfer-card .accent-left {
+      background: linear-gradient(to bottom, var(--gold), var(--gold-dk));
+    }
+    .transfer-inner {
+      flex: 1;
+      padding: 28px 32px;
+    }
+    .transfer-inner .t-eyebrow {
+      font-size: 8px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 6px;
+    }
+    .transfer-inner .t-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: #fff;
+      margin-bottom: 22px;
+    }
+    .t-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .t-item {
+      background: rgba(255,255,255,0.06);
+      border-left: 3px solid var(--gold);
+      padding: 12px 16px;
+      flex: 1;
+      min-width: 140px;
+    }
+    .t-item .t-label {
+      font-size: 8px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 5px;
+    }
+    .t-item .t-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .divider-gold-dark {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold));
+      margin: 20px 0;
+    }
+    .btn-pill {
+      border: 1.5px solid var(--gold);
+      border-radius: 24px;
+      color: var(--gold);
+      padding: 10px 22px;
+      font-family: 'Jost', sans-serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-pill:hover, .btn-pill.copied {
+      background: var(--gold);
+      color: var(--navy);
+    }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+    }
+    .footer p {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--label);
+      line-height: 2;
+    }
+    .footer .heart { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <p class="eyebrow">Lista de Deseos</p>
+    <h1>Myriam <span class="amp">&</span> Ariel</h1>
+    <div class="divider-gold"></div>
+    <p class="date">26 de junio de 2026</p>
+    <p class="sub">Su presencia es el regalo más grande.<br>Si quieren sumarse con algo, acá van algunas ideas.</p>
+  </header>
+
+  <!-- COCINA -->
+  <div class="card">
+    <div class="accent-left"></div>
+    <div class="card-inner">
+      <p class="section-title">Cocina</p>
+      <ul class="checklist" id="list-cocina">
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Set de vajilla para 12 personas</span><span class="item-tag">Cocina</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Set de ollas (4 piezas)</span><span class="item-tag">Cocina</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Sartén antiadherente grande</span><span class="item-tag">Cocina</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Pava eléctrica</span><span class="item-tag">Cocina</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Cafetera</span><span class="item-tag">Cocina</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Licuadora</span><span class="item-tag">Cocina</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Set de copas de vino (x6)</span><span class="item-tag">Cocina</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Set de vasos (x6)</span><span class="item-tag">Cocina</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Fuente para horno</span><span class="item-tag">Cocina</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Tabla de madera para picar</span><span class="item-tag">Cocina</span></li>
+      </ul>
+      <div class="counter">
+        <span class="count-text" id="count-cocina">0 / 10</span>
+        <div class="bar-wrap"><div class="bar-fill" id="bar-cocina" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DORMITORIO Y BAÑO -->
+  <div class="card">
+    <div class="accent-left"></div>
+    <div class="card-inner">
+      <p class="section-title">Dormitorio & Baño</p>
+      <ul class="checklist" id="list-hogar">
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Juego de sábanas (queen)</span><span class="item-tag">Dormitorio</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Acolchado doble</span><span class="item-tag">Dormitorio</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Almohadas (x2)</span><span class="item-tag">Dormitorio</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Juego de toallas (x4)</span><span class="item-tag">Baño</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Toallones de playa (x2)</span><span class="item-tag">Baño</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Alfombra de baño</span><span class="item-tag">Baño</span></li>
+      </ul>
+      <div class="counter">
+        <span class="count-text" id="count-hogar">0 / 6</span>
+        <div class="bar-wrap"><div class="bar-fill" id="bar-hogar" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPERIENCIAS -->
+  <div class="card">
+    <div class="accent-left"></div>
+    <div class="card-inner">
+      <p class="section-title">Experiencias</p>
+      <ul class="checklist" id="list-exp">
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Cena romántica para dos</span><span class="item-tag">Experiencia</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Día de spa</span><span class="item-tag">Experiencia</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Escapada de fin de semana</span><span class="item-tag">Experiencia</span></li>
+        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Aporte para la luna de miel</span><span class="item-tag">Viaje</span></li>
+      </ul>
+      <div class="counter">
+        <span class="count-text" id="count-exp">0 / 4</span>
+        <div class="bar-wrap"><div class="bar-fill" id="bar-exp" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSFERENCIA -->
+  <div class="transfer-card">
+    <div class="accent-left"></div>
+    <div class="transfer-inner">
+      <p class="t-eyebrow">¿Querés regalar algo?</p>
+      <p class="t-title">Transferencia bancaria</p>
+      <div class="t-row">
+        <div class="t-item">
+          <p class="t-label">Alias</p>
+          <p class="t-value" id="alias-val">myriambuena</p>
+        </div>
+        <div class="t-item">
+          <p class="t-label">A nombre de</p>
+          <p class="t-value">Myriam</p>
+        </div>
+      </div>
+      <div class="divider-gold-dark"></div>
+      <button class="btn-pill" onclick="copyAlias()"><span id="btn-txt">Copiar alias</span></button>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="divider-gold"></div>
+    <p style="margin-top:20px;">Myriam <span class="heart">♥</span> Ariel &nbsp;·&nbsp; 26 · 06 · 2026</p>
+  </footer>
+
+  <script>
+    function toggle(li) {
+      li.classList.toggle('done');
+      updateCounters();
+    }
+
+    function updateCounters() {
+      const sections = [
+        { list: 'list-cocina', count: 'count-cocina', bar: 'bar-cocina' },
+        { list: 'list-hogar',  count: 'count-hogar',  bar: 'bar-hogar'  },
+        { list: 'list-exp',    count: 'count-exp',    bar: 'bar-exp'    },
+      ];
+      sections.forEach(({ list, count, bar }) => {
+        const items = document.querySelectorAll(`#${list} li`);
+        const done  = document.querySelectorAll(`#${list} li.done`).length;
+        const total = items.length;
+        document.getElementById(count).textContent = `${done} / ${total}`;
+        document.getElementById(bar).style.width = `${(done / total) * 100}%`;
+      });
+    }
+
+    function copyAlias() {
+      const alias = document.getElementById('alias-val').textContent;
+      navigator.clipboard.writeText(alias).then(() => {
+        const btn = document.querySelector('.btn-pill');
+        const txt = document.getElementById('btn-txt');
+        btn.classList.add('copied');
+        txt.textContent = 'Alias copiado ✓';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          txt.textContent = 'Copiar alias';
+        }, 2500);
+      });
+    }
+  </script>
+
+</body>
+</html>
