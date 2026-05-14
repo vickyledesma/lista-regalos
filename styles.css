@@ -297,6 +297,52 @@ body {
 }
 .footer .heart { color: var(--gold); }
 
+#welcome-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 30, 50, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 998;
+  padding: 24px;
+  transition: opacity 0.4s;
+}
+#welcome-overlay.hide { opacity: 0; pointer-events: none; }
+
+#welcome-modal {
+  background: #fff;
+  max-width: 480px;
+  width: 100%;
+  padding: 44px 40px;
+  border-radius: 2px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+  text-align: center;
+}
+#welcome-modal .w-eyebrow {
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--label);
+  margin-bottom: 12px;
+}
+#welcome-modal .w-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  color: var(--navy);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+#welcome-modal .w-body {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--label);
+  line-height: 1.9;
+  margin: 20px 0 32px;
+}
+
 #loading-screen {
   position: fixed;
   inset: 0;

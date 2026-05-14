@@ -85,4 +85,10 @@ window.copyAlias = function() {
   });
 };
 
+window.closeWelcome = function() {
+  const overlay = document.getElementById('welcome-overlay');
+  overlay.classList.add('hide');
+  setTimeout(() => overlay.remove(), 400);
+};
+
 loadState();
