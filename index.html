@@ -25,7 +25,6 @@
       padding: 48px 16px 64px;
     }
 
-    /* HEADER */
     .header {
       text-align: center;
       margin-bottom: 44px;
@@ -66,7 +65,6 @@
       line-height: 1.8;
     }
 
-    /* CARD WRAPPER */
     .card {
       background: #fff;
       border-radius: 2px;
@@ -86,7 +84,6 @@
       padding: 28px 32px;
     }
 
-    /* SECTION TITLE */
     .section-title {
       font-size: 8px;
       letter-spacing: 3px;
@@ -97,7 +94,6 @@
       border-bottom: 1px solid var(--border);
     }
 
-    /* CHECKLIST */
     .checklist {
       list-style: none;
       display: flex;
@@ -115,14 +111,13 @@
       transition: background 0.2s;
       user-select: none;
     }
-    .checklist li:hover {
-      background: var(--info-bg);
-    }
-    .checklist li.done {
+    .checklist li:hover:not(.taken) { background: var(--info-bg); }
+    .checklist li.taken {
       background: #f0f4f0;
+      cursor: default;
     }
+    .checklist li.loading { opacity: 0.5; pointer-events: none; }
 
-    /* Custom checkbox */
     .checklist li .box {
       width: 20px;
       height: 20px;
@@ -134,11 +129,11 @@
       justify-content: center;
       transition: all 0.2s;
     }
-    .checklist li.done .box {
+    .checklist li.taken .box {
       background: var(--gold);
       border-color: var(--gold);
     }
-    .checklist li.done .box::after {
+    .checklist li.taken .box::after {
       content: '';
       display: block;
       width: 5px;
@@ -156,7 +151,7 @@
       flex: 1;
       transition: all 0.2s;
     }
-    .checklist li.done .item-text {
+    .checklist li.taken .item-text {
       text-decoration: line-through;
       color: #aab8c8;
     }
@@ -171,12 +166,23 @@
       border-radius: 20px;
       white-space: nowrap;
     }
-    .checklist li.done .item-tag {
+    .checklist li.taken .item-tag {
       background: #e0e8e0;
       color: #8aaa8a;
     }
 
-    /* COUNTER */
+    /* "Ya elegido" badge */
+    .checklist li .taken-badge {
+      display: none;
+      font-size: 8px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #8aaa8a;
+      white-space: nowrap;
+    }
+    .checklist li.taken .taken-badge { display: block; }
+    .checklist li.taken .item-tag   { display: none; }
+
     .counter {
       margin-top: 20px;
       padding-top: 16px;
@@ -210,7 +216,6 @@
       color: var(--navy);
     }
 
-    /* TRANSFER BLOCK */
     .transfer-card {
       background: var(--navy);
       border-radius: 2px;
@@ -291,10 +296,7 @@
       color: var(--navy);
     }
 
-    /* FOOTER */
-    .footer {
-      text-align: center;
-    }
+    .footer { text-align: center; }
     .footer p {
       font-size: 10px;
       letter-spacing: 2px;
@@ -303,9 +305,33 @@
       line-height: 2;
     }
     .footer .heart { color: var(--gold); }
+
+    /* loading spinner overlay */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, #e8ecf2 0%, #d0d8e4 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      transition: opacity 0.4s;
+    }
+    #loading-screen.hide { opacity: 0; pointer-events: none; }
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
+
+  <div id="loading-screen"><div class="spinner"></div></div>
 
   <header class="header">
     <p class="eyebrow">Lista de Deseos</p>
@@ -321,16 +347,16 @@
     <div class="card-inner">
       <p class="section-title">Cocina</p>
       <ul class="checklist" id="list-cocina">
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Set de vajilla para 12 personas</span><span class="item-tag">Cocina</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Set de ollas (4 piezas)</span><span class="item-tag">Cocina</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Sartén antiadherente grande</span><span class="item-tag">Cocina</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Pava eléctrica</span><span class="item-tag">Cocina</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Cafetera</span><span class="item-tag">Cocina</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Licuadora</span><span class="item-tag">Cocina</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Set de copas de vino (x6)</span><span class="item-tag">Cocina</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Set de vasos (x6)</span><span class="item-tag">Cocina</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Fuente para horno</span><span class="item-tag">Cocina</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Tabla de madera para picar</span><span class="item-tag">Cocina</span></li>
+        <li data-id="vajilla"  onclick="toggle(this)"><span class="box"></span><span class="item-text">Set de vajilla para 12 personas</span><span class="item-tag">Cocina</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="ollas"    onclick="toggle(this)"><span class="box"></span><span class="item-text">Set de ollas (4 piezas)</span><span class="item-tag">Cocina</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="sarten"   onclick="toggle(this)"><span class="box"></span><span class="item-text">Sartén antiadherente grande</span><span class="item-tag">Cocina</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="pava"     onclick="toggle(this)"><span class="box"></span><span class="item-text">Pava eléctrica</span><span class="item-tag">Cocina</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="cafetera" onclick="toggle(this)"><span class="box"></span><span class="item-text">Cafetera</span><span class="item-tag">Cocina</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="licuadora" onclick="toggle(this)"><span class="box"></span><span class="item-text">Licuadora</span><span class="item-tag">Cocina</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="copas"    onclick="toggle(this)"><span class="box"></span><span class="item-text">Set de copas de vino (x6)</span><span class="item-tag">Cocina</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="vasos"    onclick="toggle(this)"><span class="box"></span><span class="item-text">Set de vasos (x6)</span><span class="item-tag">Cocina</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="fuente"   onclick="toggle(this)"><span class="box"></span><span class="item-text">Fuente para horno</span><span class="item-tag">Cocina</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="tabla"    onclick="toggle(this)"><span class="box"></span><span class="item-text">Tabla de madera para picar</span><span class="item-tag">Cocina</span><span class="taken-badge">ya elegido</span></li>
       </ul>
       <div class="counter">
         <span class="count-text" id="count-cocina">0 / 10</span>
@@ -345,12 +371,12 @@
     <div class="card-inner">
       <p class="section-title">Dormitorio & Baño</p>
       <ul class="checklist" id="list-hogar">
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Juego de sábanas (queen)</span><span class="item-tag">Dormitorio</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Acolchado doble</span><span class="item-tag">Dormitorio</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Almohadas (x2)</span><span class="item-tag">Dormitorio</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Juego de toallas (x4)</span><span class="item-tag">Baño</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Toallones de playa (x2)</span><span class="item-tag">Baño</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Alfombra de baño</span><span class="item-tag">Baño</span></li>
+        <li data-id="sabanas"   onclick="toggle(this)"><span class="box"></span><span class="item-text">Juego de sábanas (queen)</span><span class="item-tag">Dormitorio</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="acolchado" onclick="toggle(this)"><span class="box"></span><span class="item-text">Acolchado doble</span><span class="item-tag">Dormitorio</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="almohadas" onclick="toggle(this)"><span class="box"></span><span class="item-text">Almohadas (x2)</span><span class="item-tag">Dormitorio</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="toallas"   onclick="toggle(this)"><span class="box"></span><span class="item-text">Juego de toallas (x4)</span><span class="item-tag">Baño</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="toallones" onclick="toggle(this)"><span class="box"></span><span class="item-text">Toallones de playa (x2)</span><span class="item-tag">Baño</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="alfombra"  onclick="toggle(this)"><span class="box"></span><span class="item-text">Alfombra de baño</span><span class="item-tag">Baño</span><span class="taken-badge">ya elegido</span></li>
       </ul>
       <div class="counter">
         <span class="count-text" id="count-hogar">0 / 6</span>
@@ -365,10 +391,10 @@
     <div class="card-inner">
       <p class="section-title">Experiencias</p>
       <ul class="checklist" id="list-exp">
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Cena romántica para dos</span><span class="item-tag">Experiencia</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Día de spa</span><span class="item-tag">Experiencia</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Escapada de fin de semana</span><span class="item-tag">Experiencia</span></li>
-        <li onclick="toggle(this)"><span class="box"></span><span class="item-text">Aporte para la luna de miel</span><span class="item-tag">Viaje</span></li>
+        <li data-id="cena"     onclick="toggle(this)"><span class="box"></span><span class="item-text">Cena romántica para dos</span><span class="item-tag">Experiencia</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="spa"      onclick="toggle(this)"><span class="box"></span><span class="item-text">Día de spa</span><span class="item-tag">Experiencia</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="escapada" onclick="toggle(this)"><span class="box"></span><span class="item-text">Escapada de fin de semana</span><span class="item-tag">Experiencia</span><span class="taken-badge">ya elegido</span></li>
+        <li data-id="lunamiel" onclick="toggle(this)"><span class="box"></span><span class="item-text">Aporte para la luna de miel</span><span class="item-tag">Viaje</span><span class="taken-badge">ya elegido</span></li>
       </ul>
       <div class="counter">
         <span class="count-text" id="count-exp">0 / 4</span>
@@ -403,28 +429,82 @@
     <p style="margin-top:20px;">Myriam <span class="heart">♥</span> Ariel &nbsp;·&nbsp; 26 · 06 · 2026</p>
   </footer>
 
-  <script>
-    function toggle(li) {
-      li.classList.toggle('done');
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const supabase = createClient(
+      'https://hbjxmsnhgkdarfvdoexb.supabase.co',
+      'sb_publishable_VKMtHSmk2XLTep0ljQcLwA_x9p9bS2f'
+    );
+
+    const sections = [
+      { list: 'list-cocina', count: 'count-cocina', bar: 'bar-cocina' },
+      { list: 'list-hogar',  count: 'count-hogar',  bar: 'bar-hogar'  },
+      { list: 'list-exp',    count: 'count-exp',    bar: 'bar-exp'    },
+    ];
+
+    // Load state from Supabase
+    async function loadState() {
+      const { data, error } = await supabase.from('gifts').select('id, taken');
+      if (error) { console.error(error); return; }
+
+      const takenSet = new Set(data.filter(r => r.taken).map(r => r.id));
+      document.querySelectorAll('.checklist li').forEach(li => {
+        if (takenSet.has(li.dataset.id)) li.classList.add('taken');
+      });
       updateCounters();
+
+      // Hide loading screen
+      const screen = document.getElementById('loading-screen');
+      screen.classList.add('hide');
+      setTimeout(() => screen.remove(), 400);
     }
 
+    // Toggle item
+    window.toggle = async function(li) {
+      if (li.classList.contains('taken')) return; // already taken, can't undo
+      if (li.classList.contains('loading')) return;
+
+      const id = li.dataset.id;
+      li.classList.add('loading');
+
+      // Upsert taken = true
+      const { error } = await supabase.from('gifts').upsert({ id, taken: true });
+      li.classList.remove('loading');
+
+      if (!error) {
+        li.classList.add('taken');
+        updateCounters();
+      } else {
+        console.error(error);
+        alert('Hubo un error al guardar. Intentá de nuevo.');
+      }
+    };
+
+    // Real-time updates
+    supabase
+      .channel('gifts-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'gifts' }, payload => {
+        const { id, taken } = payload.new;
+        const li = document.querySelector(`[data-id="${id}"]`);
+        if (!li) return;
+        if (taken) li.classList.add('taken');
+        else li.classList.remove('taken');
+        updateCounters();
+      })
+      .subscribe();
+
     function updateCounters() {
-      const sections = [
-        { list: 'list-cocina', count: 'count-cocina', bar: 'bar-cocina' },
-        { list: 'list-hogar',  count: 'count-hogar',  bar: 'bar-hogar'  },
-        { list: 'list-exp',    count: 'count-exp',    bar: 'bar-exp'    },
-      ];
       sections.forEach(({ list, count, bar }) => {
         const items = document.querySelectorAll(`#${list} li`);
-        const done  = document.querySelectorAll(`#${list} li.done`).length;
+        const done  = document.querySelectorAll(`#${list} li.taken`).length;
         const total = items.length;
         document.getElementById(count).textContent = `${done} / ${total}`;
         document.getElementById(bar).style.width = `${(done / total) * 100}%`;
       });
     }
 
-    function copyAlias() {
+    window.copyAlias = function() {
       const alias = document.getElementById('alias-val').textContent;
       navigator.clipboard.writeText(alias).then(() => {
         const btn = document.querySelector('.btn-pill');
@@ -436,7 +516,9 @@
           txt.textContent = 'Copiar alias';
         }, 2500);
       });
-    }
+    };
+
+    loadState();
   </script>
 
 </body>
